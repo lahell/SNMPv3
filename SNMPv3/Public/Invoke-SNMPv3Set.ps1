@@ -67,7 +67,7 @@
 
 .EXAMPLE
 
-    PS> Invoke-SNMPv3Set -UserName usr-none-none -Target demo.snmplabs.com -OID 1.3.6.1.2.1.1.5.0 -Type OctetString -Value SysName
+    PS> Invoke-SNMPv3Set -UserName usr-none-none -Target demo.snmplabs.com -OID 1.3.6.1.2.1.1.5.0 -Type String -Value SysName
 
     Node           OID               Type        Value
     ----           ---               ----        -----
