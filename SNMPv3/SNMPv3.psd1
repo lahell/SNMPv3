@@ -15,7 +15,7 @@ RootModule = 'SNMPv3'
 ModuleVersion = '1.0.3'
 
 # Supported PSEditions
-# CompatiblePSEditions = @()
+CompatiblePSEditions = @('Desktop')
 
 # ID used to uniquely identify this module
 GUID = '1e570f86-8678-4667-8b81-26e551afdb12'
@@ -33,7 +33,7 @@ Copyright = '(c) 2019 lahell. All rights reserved.'
 Description = 'PowerShell Module for SNMPv3'
 
 # Minimum version of the Windows PowerShell engine required by this module
-PowerShellVersion = '5.0'
+PowerShellVersion = '5.1'
 
 # Name of the Windows PowerShell host required by this module
 # PowerShellHostName = ''
@@ -99,7 +99,7 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = @('SNMP', 'SNMPv3', 'SNMPGet', 'SNMPSet', 'SNMPWalk')
+        Tags = @('SNMP', 'SNMPv3', 'SNMPGet', 'SNMPSet', 'SNMPWalk', 'Windows')
 
         # A URL to the license for this module.
         LicenseUri = 'https://raw.githubusercontent.com/lahell/SNMPv3/master/LICENSE'

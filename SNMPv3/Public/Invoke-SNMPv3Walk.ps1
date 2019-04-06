@@ -214,7 +214,7 @@
                             Node  = $IPAddress
                             OID   = $Vb.Oid.ToString()
                             Type  = $GetTypeName.Invoke($null, $Vb.Value.Type)
-                            Value = $Vb.Value
+                            Value = $Vb.Value.ToString()
                         }
                         $LastOid = $Vb.Oid
                     }

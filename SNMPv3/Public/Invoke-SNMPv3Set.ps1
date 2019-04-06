@@ -23,11 +23,11 @@
 
     Object Identifier of the value to set.
 
-.PARAMETER AsnType
+.PARAMETER Type
 
     Data type of the value to set. The following data types are valid:
 
-    Integer32, Counter32, Gauge32, Counter64, TimeTicks, OctetString, IpAddress, Oid, Null
+    Integer, Unsigned, String, HexString, DecimalString, NullObject, ObjectIdentifier, TimeTicks, IPAddress
 
 .PARAMETER Value
 
@@ -67,11 +67,11 @@
 
 .EXAMPLE
 
-    PS> Invoke-SNMPv3Set -UserName usr-none-none -Target demo.snmplabs.com -OID 1.3.6.1.2.1.1.5.0 -AsnType OctetString -Value Admin
+    PS> Invoke-SNMPv3Set -UserName usr-none-none -Target demo.snmplabs.com -OID 1.3.6.1.2.1.1.5.0 -Type OctetString -Value SysName
 
     Node           OID               Type        Value
     ----           ---               ----        -----
-    104.236.166.95 1.3.6.1.2.1.1.5.0 OctetString Admin
+    104.236.166.95 1.3.6.1.2.1.1.5.0 OctetString SysName
 
 #>
 
@@ -87,8 +87,8 @@
         [String]$OID,
 
         [Parameter(Mandatory=$true)]  
-        [ValidateSet('Integer32', 'Counter32', 'Gauge32', 'Counter64', 'TimeTicks', 'OctetString', 'IpAddress', 'Oid', 'Null')]
-        [String]$AsnType,
+        [ValidateSet('Integer', 'Unsigned', 'String', 'HexString', 'DecimalString', 'NullObject', 'ObjectIdentifier', 'TimeTicks', 'IPAddress')]
+        [String]$Type,
 
         [Parameter(Mandatory=$true)]
         [Object]$Value,
@@ -165,18 +165,50 @@
 
         Write-Verbose ('Context: {0}' -f $Params.ContextName)
 
-        if ($AsnType -eq 'Null')
+        switch ($Type)
         {
-            $SetValue = [SnmpSharpNet.Null]::new()
-        } 
-        else 
-        {
-            $SetValue = New-Object "SnmpSharpNet.$AsnType" ($Value)
+            'Integer' { 
+                $Data = [SnmpSharpNet.Integer32]::new([int32]::Parse($Value))
+            }
+            'Unsigned' {
+                $Data = [SnmpSharpNet.UInteger32]::new([uint32]::Parse($Value))
+            }
+            'String' {
+                $Data = [SnmpSharpNet.OctetString]::new($Value)
+            }
+            'HexString' {
+                $HexString = $Value -replace '0x|\s'
+                $Bytes = [byte[]]::new($HexString.Length / 2)
+                for ($i = 0; $i -lt $HexString.Length; $i += 2){
+                    $Bytes[$i/2] = [convert]::ToByte($HexString.Substring($i, 2), 16)
+                }
+                $Data = [SnmpSharpNet.OctetString]::new($Bytes)
+            }
+            'DecimalString' {
+                [byte[]]$Bytes = $Value -split ' ' | foreach {[byte]$_}
+                $Data = [SnmpSharpNet.OctetString]::new($Bytes)
+            }
+            'NullObject' {
+                $Data = [SnmpSharpNet.Null]::new()
+            }
+            'ObjectIdentifier' {
+                $Data = [SnmpSharpNet.Oid]::new($Value)
+            }
+            'TimeTicks' {
+                $Data = [SnmpSharpNet.TimeTicks]::new([uint32]::Parse($Value))
+            }
+            'IPAddress' {
+                $Data = [SnmpSharpNet.IpAddress]::new([IPAddress]::Parse($Value).GetAddressBytes())
+            }
+            default {
+                Write-Warning "Unknown type string: $Type"
+                return
+            }
         }
 
         $Pdu = [SnmpSharpNet.Pdu]::new()
         $Pdu.Type = [SnmpSharpNet.PduType]::Set
-        $Pdu.VbList.Add($OID, $SetValue)
+        $Pdu.VbList.Add($OID, $Data)
 
         Write-Verbose ($Pdu.VbList | foreach {"Variable Binding: $_"})
 
@@ -221,7 +253,7 @@
                     Node  = $IPAddress
                     OID   = $Vb.Oid.ToString()
                     Type  = $GetTypeName.Invoke($null, $Vb.Value.Type)
-                    Value = $Vb.Value
+                    Value = $Vb.Value.ToString()
                 }
             }
         }
