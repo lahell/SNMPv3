@@ -87,15 +87,13 @@
         [String]$OID,
 
         [Parameter(Mandatory=$false)]
-        [ValidateSet('None', 'MD5', 'SHA1', 'SHA256')]
-        [String]$AuthType = 'None',
+        [SNMPv3AuthType]$AuthType = 'None',
 
         [Parameter(Mandatory=$false)]
         [String]$AuthSecret,
 
         [Parameter(Mandatory=$false)]
-        [ValidateSet('None', 'DES', 'TripleDES', 'AES128', 'AES192', 'AES256')]
-        [String]$PrivType = 'None',
+        [SNMPv3PrivType]$PrivType = 'None',
 
         [Parameter(Mandatory=$false)]
         [String]$PrivSecret,
