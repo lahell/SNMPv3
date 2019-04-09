@@ -60,7 +60,7 @@ RequiredAssemblies = @('lib\SharpSnmpLib.dll')
 # ScriptsToProcess = @()
 
 # Type files (.ps1xml) to be loaded when importing this module
-# TypesToProcess = @()
+TypesToProcess = @('SNMPv3.types.ps1xml')
 
 # Format files (.ps1xml) to be loaded when importing this module
 # FormatsToProcess = @()

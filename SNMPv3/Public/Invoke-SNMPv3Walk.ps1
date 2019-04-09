@@ -52,6 +52,14 @@
 
     Timeout in milliseconds when connecting to SNMP Agent. Defaults to 3000.
 
+.INPUTS
+
+    None. You cannot pipe objects to SNMPv3Walk.
+
+.OUTPUTS
+
+    SNMPv3Output
+
 .EXAMPLE
 
     PS> Invoke-SNMPv3Walk -UserName usr-none-none -Target demo.snmplabs.com -OID 1.3.6.1.2.1.2.2.1.1 -Context 1016117d6836664ee15b9b2af5642c3c
@@ -67,6 +75,7 @@
 #>
 
     [CmdletBinding()]
+    [OutputType('SNMPv3Output')]
     param(
         [Parameter(Mandatory=$true)]
         [String]$UserName,
@@ -140,10 +149,11 @@
 
     $Result | foreach {
         [PSCustomObject] @{
-            Node  = $IPAddress
-            OID   = $_.Id.ToString()
-            Type  = $_.Data.TypeCode
-            Value = $_.Data
+            PSTypeName = 'SNMPv3Output'
+            Node       = $IPAddress
+            OID        = $_.Id.ToString()
+            Type       = $_.Data.TypeCode
+            Value      = $_.Data
         }
     }
 }
