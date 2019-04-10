@@ -1,4 +1,6 @@
-﻿<##
+﻿#Requires -Modules @{ ModuleName="SNMPv3"; ModuleVersion="1.1.0" }
+
+<##
  #
  # Use Invoke-SNMPv3Get and Invoke-SNMPv3Walk to search for a MAC address
  # in the MAC address table of Cisco Catalyst switches.
