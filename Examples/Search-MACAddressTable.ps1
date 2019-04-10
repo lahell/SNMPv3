@@ -1,6 +1,6 @@
 ﻿<##
  #
- # Use Invoke-SNMPv3Get and SNMPv3Walk to search for a MAC address
+ # Use Invoke-SNMPv3Get and Invoke-SNMPv3Walk to search for a MAC address
  # in the MAC address table of Cisco Catalyst switches.
  #
  # If a MAC address has been learned on a trunk port you can use -Recurse to follow the 
