@@ -1,5 +1,6 @@
 ﻿function Invoke-SNMPv3Get
 {
+
 <#
 
 .SYNOPSIS
@@ -9,7 +10,7 @@
 .DESCRIPTION
 
     Function supports SNMPv3 with security levels noAuthNoPriv, authNoPriv and authPriv.
-    Based on SnmpSharpNet - SNMP Library for C# (http://www.snmpsharpnet.com/) 
+    Based on #SNMP Library (https://www.sharpsnmp.com/) 
 
 .PARAMETER UserName
 
@@ -51,21 +52,26 @@
 
     Timeout in milliseconds when connecting to SNMP Agent. Defaults to 3000.
 
-.PARAMETER Retry
+.INPUTS
 
-    Number of retries if connection fails. Defaults to 1.
+    None. You cannot pipe objects to SNMPv3Get.
+
+.OUTPUTS
+
+    SNMPv3Output
 
 .EXAMPLE
 
     PS> Invoke-SNMPv3Get -UserName usr-none-none -Target demo.snmplabs.com -OID 1.3.6.1.2.1.1.1.0
 
-    Node           OID               Type        Value                                                          
-    ----           ---               ----        -----                                                          
+    Node           OID                      Type Value                                                          
+    ----           ---                      ---- -----                                                          
     104.236.166.95 1.3.6.1.2.1.1.1.0 OctetString Linux zeus 4.8.6.5-smp #2 SMP Sun Nov 13 14:58:11 CDT 2016 i686
 
 #>
 
     [CmdletBinding()]
+    [OutputType('SNMPv3Output')]
     param(
         [Parameter(Mandatory=$true)]
         [String]$UserName,
@@ -74,18 +80,16 @@
         [String]$Target,
 
         [Parameter(Mandatory=$true)]
-        [String]$OID,
+        [String[]]$OID,
 
         [Parameter(Mandatory=$false)]
-        [ValidateSet('None', 'MD5', 'SHA1')]
-        [String]$AuthType = 'None',
+        [SNMPv3AuthType]$AuthType = 'None',
 
         [Parameter(Mandatory=$false)]
         [String]$AuthSecret,
 
         [Parameter(Mandatory=$false)]
-        [ValidateSet('None', 'DES', 'TripleDES', 'AES128', 'AES192', 'AES256')]
-        [String]$PrivType = 'None',
+        [SNMPv3PrivType]$PrivType = 'None',
 
         [Parameter(Mandatory=$false)]
         [String]$PrivSecret,
@@ -97,107 +101,98 @@
         [int]$Port = 161,
 
         [Parameter(Mandatory=$false)]
-        [int]$Timeout = 3000,
-
-        [Parameter(Mandatory=$false)]
-        [int]$Retry = 1
+        [int]$Timeout = 3000
     )
 
-    process
+    $SecurityLevel = Get-SharpSnmpSecurityLevel $AuthType $AuthSecret $PrivType $PrivSecret
+
+    if ($SecurityLevel.IsValid)
     {
+        $Authentication = Get-SharpSnmpAuthenticationProvider $AuthType $AuthSecret
+        $Privacy = Get-SharpSnmpPrivacyProvider $PrivType $PrivSecret $Authentication
+    }
+    else
+    {
+        $InvalidSecurityLevel = [System.FormatException]::new('Invalid security level provided')
+        Throw $InvalidSecurityLevel
+    }
 
-        $IPAddress = [System.Net.Dns]::GetHostEntry($Target).AddressList[0]
-        $UdpTarget = [SnmpSharpNet.UdpTarget]::new($IPAddress, $Port, $Timeout, $Retry)
-        $Params = [SnmpSharpNet.SecureAgentParameters]::new()
+    $Context = if ([String]::IsNullOrWhiteSpace($Context)) {[String]::Empty} else {$Context}
 
-        if (-not $UdpTarget.Discovery($Params))
+    $IPAddress  = [System.Net.Dns]::GetHostEntry($Target).AddressList[0]
+    $IPEndPoint = [System.Net.IPEndPoint]::new($IPAddress, $Port)
+
+    $Discovery = [Lextm.SharpSnmpLib.Messaging.Messenger]::GetNextDiscovery([Lextm.SharpSnmpLib.SnmpType]::GetRequestPdu)
+    $Report = $Discovery.GetResponse($Timeout, $IPEndPoint)
+
+    $VariableList = [System.Collections.Generic.List[Lextm.SharpSnmpLib.Variable]]::new()
+
+    foreach ($ObjectIdentifier in $OID)
+    {
+        $VariableList.Add([Lextm.SharpSnmpLib.ObjectIdentifier]::new($ObjectIdentifier))
+    }
+
+    $Request = [Lextm.SharpSnmpLib.Messaging.GetRequestMessage]::new(
+        [Lextm.SharpSnmpLib.VersionCode]::V3,
+        [Lextm.SharpSnmpLib.Messaging.Messenger]::NextMessageId,
+        [Lextm.SharpSnmpLib.Messaging.Messenger]::NextRequestId,
+        [Lextm.SharpSnmpLib.OctetString]::new($UserName),
+        [Lextm.SharpSnmpLib.OctetString]::new($Context),
+        $VariableList,
+        $Privacy,
+        [Lextm.SharpSnmpLib.Messaging.Messenger]::MaxMessageSize,
+        $Report
+    )
+
+    $Reply = [Lextm.SharpSnmpLib.Messaging.SnmpMessageExtension]::GetResponse($Request, $Timeout, $IPEndPoint)
+
+    if ($Reply -is [Lextm.SharpSnmpLib.Messaging.ReportMessage])
+    {
+        if ($Reply.Scope.Pdu.Variables.Count -eq 0)
         {
-            Write-Error 'Discovery failed. Unable to continue...'
-            $UdpTarget.Close()
+            Write-Warning "wrong report message received"
             return
         }
 
-        if ($AuthType -ne 'None' -and $AuthSecret -and $PrivType -ne 'None' -and $PrivSecret)
+        $Id = $Reply.Scope.Pdu.Variables[0].Id
+        if ($Id -ne [Lextm.SharpSnmpLib.Messaging.Messenger]::NotInTimeWindow)
         {
-            Write-Verbose 'Security Level: authPriv'
-            $Params.authPriv($UserName,
-                [SnmpSharpNet.AuthenticationDigests]::$AuthType, $AuthSecret,
-                [SnmpSharpNet.PrivacyProtocols]::$PrivType, $PrivSecret)
-        }
-        elseif ($AuthType -ne 'None' -and $AuthSecret -and $PrivType -eq 'None' -and (-not $PrivSecret))
-        {
-            Write-Verbose 'Security Level: authNoPriv'
-            $Params.authNoPriv($UserName,
-                [SnmpSharpNet.AuthenticationDigests]::$AuthType, $AuthSecret) 
-        }
-        elseif ($AuthType -eq 'None' -and (-not $AuthSecret) -and $PrivType -eq 'None' -and (-not $PrivSecret))
-        {
-            Write-Verbose 'Security Level: noAuthNoPriv'
-            $Params.noAuthNoPriv($UserName)
-        }
-        else
-        {
-            Write-Error 'Invalid security level. SNMPv3 supports the following security levels: noAuthNoPriv, authNoPriv, authPriv'
-            exit
+            $ErrMsg = [Lextm.SharpSnmpLib.Messaging.Messenger]::GetErrorMessage($Id)
+            Write-Warning $ErrMsg
+            return
         }
 
-        if ($Context)
-        {
-            $Params.ContextName.Set($Context)
-        }
+        # according to RFC 3414, send a second request to sync time.
+        $Request = [Lextm.SharpSnmpLib.Messaging.GetRequestMessage]::new(
+            [Lextm.SharpSnmpLib.VersionCode]::V3,
+            [Lextm.SharpSnmpLib.Messaging.Messenger]::NextMessageId,
+            [Lextm.SharpSnmpLib.Messaging.Messenger]::NextRequestId,
+            [Lextm.SharpSnmpLib.OctetString]::new($UserName),
+            [Lextm.SharpSnmpLib.OctetString]::new($Context),
+            $VariableList,
+            $Privacy,
+            [Lextm.SharpSnmpLib.Messaging.Messenger]::MaxMessageSize,
+            $Report
+        )
 
-        Write-Verbose ('Context: {0}' -f $Params.ContextName)
+        $Reply = [Lextm.SharpSnmpLib.Messaging.SnmpMessageExtension]::GetResponse($Request, $Timeout, $IPEndPoint)
+    }
+    elseif ($Reply.ErrorStatus -ne [Lextm.SharpSnmpLib.ErrorCode]::NoError)
+    {
+        throw [Lextm.SharpSnmpLib.Messaging.ErrorException]::Create(
+            "error in response",
+            $IPEndPoint.Address,
+            $Reply
+        )
+    }
 
-        $Pdu = [SnmpSharpNet.Pdu]::new()
-        $Pdu.Type = [SnmpSharpNet.PduType]::Get
-        $Pdu.VbList.Add($OID)
-
-        Write-Verbose ($Pdu.VbList | foreach {"Variable Binding: $_"})
-
-        # Workaround because [SnmpSharpNet.SnmpConstants]::GetTypeName() gives the following error:
-        # The field or property: "EnterpriseSpecific" for type: "SnmpSharpNet.SnmpConstants" differs only in letter casing 
-        # from the field or property: "enterpriseSpecific". The type must be Common Language Specification (CLS) compliant.
-        $GetTypeName = [SnmpSharpNet.SnmpConstants].GetMethod("GetTypeName") 
-
-        try
-        {
-            $Result = $UdpTarget.Request($Pdu, $Params)
-        }
-        catch
-        {
-            Write-Warning "$Target`: $_"
-            $Result = $null
-        }
-
-        if ($Result)
-        {
-            if ($Result.Pdu.Type -eq [SnmpSharpNet.PduType]::Report)
-            {
-                Write-Warning 'Report packet received.'
-                $ErrStr = [SnmpSharpNet.SNMPV3ReportError]::TranslateError($Result)
-                Write-Warning ('Error: {0}' -f $ErrStr)
-                $UdpTarget.Close()
-                return
-            }
-
-            if ($Result.Pdu.ErrorStatus -ne 0)
-            {
-                $ErrMsg = 'SNMP target has returned error code {0} on index {1}.' -f 
-                    [SnmpSharpNet.SnmpError]::ErrorMessage($Result.Pdu.ErrorStatus),
-                    $Result.Pdu.ErrorIndex
-                Write-Warning $ErrMsg
-                return
-            }
-
-            foreach ($Vb in $Result.Pdu.VbList)
-            {
-                [PSCustomObject] @{
-                    Node  = $IPAddress
-                    OID   = $Vb.Oid.ToString()
-                    Type  = $GetTypeName.Invoke($null, $Vb.Value.Type)
-                    Value = $Vb.Value.ToString()
-                }
-            }
+    $Reply.Scope.Pdu.Variables | foreach {
+        [PSCustomObject] @{
+            PSTypeName = 'SNMPv3Output'
+            Node       = $IPAddress
+            OID        = $_.Id.ToString()
+            Type       = $_.Data.TypeCode
+            Value      = $_.Data
         }
     }
 }
