@@ -210,7 +210,6 @@ Search-MACAddressTable @Search -Recurse -Verbose
 
 <# Output:
 
-VERBOSE: Moving on to switch1.mycompany.example
 VERBOSE: Moving on to switch2.mycompany.example
 VERBOSE: Moving on to switch3.mycompany.example
 
