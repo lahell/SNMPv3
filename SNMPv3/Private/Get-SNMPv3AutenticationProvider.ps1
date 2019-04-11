@@ -1,4 +1,4 @@
-﻿function Get-SharpSnmpAuthenticationProvider
+﻿function Get-SNMPv3AuthenticationProvider
 {
     param(
         [string]$AuthType,

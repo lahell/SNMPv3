@@ -1,4 +1,4 @@
-﻿function Get-SharpSnmpSecurityLevel
+﻿function Get-SNMPv3SecurityLevel
 {
     param(
         [string]$AuthType,

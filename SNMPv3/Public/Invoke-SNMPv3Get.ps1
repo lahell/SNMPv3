@@ -104,12 +104,12 @@
         [int]$Timeout = 3000
     )
 
-    $SecurityLevel = Get-SharpSnmpSecurityLevel $AuthType $AuthSecret $PrivType $PrivSecret
+    $SecurityLevel = Get-SNMPv3SecurityLevel $AuthType $AuthSecret $PrivType $PrivSecret
 
     if ($SecurityLevel.IsValid)
     {
-        $Authentication = Get-SharpSnmpAuthenticationProvider $AuthType $AuthSecret
-        $Privacy = Get-SharpSnmpPrivacyProvider $PrivType $PrivSecret $Authentication
+        $Authentication = Get-SNMPv3AuthenticationProvider $AuthType $AuthSecret
+        $Privacy = Get-SNMPv3PrivacyProvider $PrivType $PrivSecret $Authentication
     }
     else
     {

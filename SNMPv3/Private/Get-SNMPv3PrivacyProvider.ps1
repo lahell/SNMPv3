@@ -1,4 +1,4 @@
-﻿function Get-SharpSnmpPrivacyProvider
+﻿function Get-SNMPv3PrivacyProvider
 {
     param(
         [string]$PrivType,
