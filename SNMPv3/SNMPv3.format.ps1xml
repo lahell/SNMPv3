@@ -10,10 +10,10 @@
                 <CustomEntries>
                     <CustomEntry>
                         <CustomItem>
-							<ExpressionBinding>
-								<PropertyName>Value</PropertyName>
-							</ExpressionBinding>
-						</CustomItem>
+                            <ExpressionBinding>
+                                <PropertyName>Value</PropertyName>
+                            </ExpressionBinding>
+                        </CustomItem>
                     </CustomEntry>
                 </CustomEntries>
             </CustomControl>
@@ -27,10 +27,10 @@
                 <CustomEntries>
                     <CustomEntry>
                         <CustomItem>
-							<ExpressionBinding>
-								<PropertyName>Value</PropertyName>
-							</ExpressionBinding>
-						</CustomItem>
+                            <ExpressionBinding>
+                                <PropertyName>Value</PropertyName>
+                            </ExpressionBinding>
+                        </CustomItem>
                     </CustomEntry>
                 </CustomEntries>
             </CustomControl>
@@ -44,10 +44,10 @@
                 <CustomEntries>
                     <CustomEntry>
                         <CustomItem>
-							<ExpressionBinding>
-								<PropertyName>Value</PropertyName>
-							</ExpressionBinding>
-						</CustomItem>
+                            <ExpressionBinding>
+                                <PropertyName>Value</PropertyName>
+                            </ExpressionBinding>
+                        </CustomItem>
                     </CustomEntry>
                 </CustomEntries>
             </CustomControl>

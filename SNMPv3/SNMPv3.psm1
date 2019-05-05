@@ -4,14 +4,14 @@ $Public = @( Get-ChildItem -Path $PSScriptRoot\Public\*.ps1 -ErrorAction Silentl
 
 foreach ($Import in @($Types + $Private + $Public))
 {
-	try
-	{
-		. $Import.FullName
-	}
-	catch
-	{
-		Write-Error -Message "Failed to import function $($Import.FullName): $_"
-	}
+    try
+    {
+        . $Import.FullName
+    }
+    catch
+    {
+        Write-Error -Message "Failed to import function $($Import.FullName): $_"
+    }
 }
 
 Export-ModuleMember -Function $Public.BaseName
