@@ -3,6 +3,12 @@ SNMPv3
 
 PowerShell Module for SNMPv3
 
+### Installation
+
+```PowerShell
+Install-Module -Name SNMPv3
+```
+
 ### Example of Invoke-SNMPv3Get with security model noAuthNoPriv
 
 ```PowerShell
