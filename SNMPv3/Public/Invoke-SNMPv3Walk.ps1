@@ -124,7 +124,11 @@
 
     $Context = if ([String]::IsNullOrWhiteSpace($Context)) {[String]::Empty} else {$Context}
 
-    $IPAddress  = [System.Net.Dns]::GetHostEntry($Target).AddressList[0]
+    $IPAddress = [ipaddress]::None
+    if ([ipaddress]::TryParse($Target, [ref]$IPAddress) -eq $false) {
+        $IPAddress  = [System.Net.Dns]::GetHostEntry($Target).AddressList[0]
+    }
+
     $IPEndPoint = [System.Net.IPEndPoint]::new($IPAddress, $Port)
 
     $Discovery = [Lextm.SharpSnmpLib.Messaging.Messenger]::GetNextDiscovery([Lextm.SharpSnmpLib.SnmpType]::GetRequestPdu)
