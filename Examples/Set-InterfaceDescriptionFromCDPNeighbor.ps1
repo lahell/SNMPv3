@@ -1,4 +1,6 @@
-﻿# Prepare a hashtable with parameters
+﻿#Requires -Modules @{ ModuleName="SNMPv3"; ModuleVersion="1.1.1" }
+
+# Prepare a hashtable with parameters
 $Request = @{
     UserName   = 'MyUser'
     Target     = 'MySwitch'

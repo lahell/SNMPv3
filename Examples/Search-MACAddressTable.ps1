@@ -1,4 +1,4 @@
-﻿#Requires -Modules @{ ModuleName="SNMPv3"; ModuleVersion="1.1.0" }
+﻿#Requires -Modules @{ ModuleName="SNMPv3"; ModuleVersion="1.1.1" }
 
 <##
  #
