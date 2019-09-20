@@ -225,7 +225,7 @@
             $VariableList,
             $Privacy,
             [Lextm.SharpSnmpLib.Messaging.Messenger]::MaxMessageSize,
-            $Report
+            $Reply
         )
 
         $Reply = [Lextm.SharpSnmpLib.Messaging.SnmpMessageExtension]::GetResponse($Request, $Timeout, $IPEndPoint)
