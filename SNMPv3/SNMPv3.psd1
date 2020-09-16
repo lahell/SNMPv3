@@ -12,10 +12,10 @@
 RootModule = 'SNMPv3'
 
 # Version number of this module.
-ModuleVersion = '1.1.1'
+ModuleVersion = '1.1.2'
 
 # Supported PSEditions
-CompatiblePSEditions = @('Desktop')
+CompatiblePSEditions = @('Desktop', 'Core')
 
 # ID used to uniquely identify this module
 GUID = '1e570f86-8678-4667-8b81-26e551afdb12'
@@ -42,7 +42,7 @@ PowerShellVersion = '5.1'
 # PowerShellHostVersion = ''
 
 # Minimum version of Microsoft .NET Framework required by this module. This prerequisite is valid for the PowerShell Desktop edition only.
-DotNetFrameworkVersion = '4.5'
+DotNetFrameworkVersion = '4.5.1'
 
 # Minimum version of the common language runtime (CLR) required by this module. This prerequisite is valid for the PowerShell Desktop edition only.
 # CLRVersion = ''
@@ -54,7 +54,11 @@ DotNetFrameworkVersion = '4.5'
 # RequiredModules = @()
 
 # Assemblies that must be loaded prior to importing this module
-RequiredAssemblies = @('lib\SharpSnmpLib.dll')
+RequiredAssemblies = @(
+    'lib\SharpSnmpLib.dll',
+    'lib\BouncyCastle.Crypto.dll',
+    'lib\SNMPv3.BouncyCastle.dll'
+)
 
 # Script files (.ps1) that are run in the caller's environment prior to importing this module.
 # ScriptsToProcess = @()
@@ -99,7 +103,7 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = @('SNMP', 'SNMPv3', 'SNMPGet', 'SNMPSet', 'SNMPWalk', 'Windows')
+        Tags = @('SNMP', 'SNMPv3', 'SNMPGet', 'SNMPSet', 'SNMPWalk')
 
         # A URL to the license for this module.
         LicenseUri = 'https://raw.githubusercontent.com/lahell/SNMPv3/master/LICENSE'
