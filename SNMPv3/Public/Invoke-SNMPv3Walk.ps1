@@ -131,7 +131,7 @@
 
     $IPEndPoint = [System.Net.IPEndPoint]::new($IPAddress, $Port)
 
-    $Discovery = [Lextm.SharpSnmpLib.Messaging.Messenger]::GetNextDiscovery([Lextm.SharpSnmpLib.SnmpType]::GetRequestPdu)
+    $Discovery = [Lextm.SharpSnmpLib.Messaging.Messenger]::GetNextDiscovery([Lextm.SharpSnmpLib.SnmpType]::GetBulkRequestPdu)
     $Report = $Discovery.GetResponse($Timeout, $IPEndPoint)
 
     $Result = [System.Collections.Generic.List[Lextm.SharpSnmpLib.Variable]]::new()
