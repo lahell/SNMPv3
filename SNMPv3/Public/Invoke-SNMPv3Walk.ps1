@@ -53,6 +53,10 @@
 
     Timeout in milliseconds when connecting to SNMP Agent. Defaults to 3000.
 
+.PARAMETER NoFullRange
+
+    Use this switch if your target device does not support negative RequestId.
+
 .INPUTS
 
     None. You cannot pipe objects to SNMPv3Walk.
@@ -106,8 +110,16 @@
         [int]$Port = 161,
 
         [Parameter(Mandatory=$false)]
-        [int]$Timeout = 3000
+        [int]$Timeout = 3000,
+
+        [switch]$NoFullRange
     )
+
+    if ($NoFullRange.IsPresent) {
+        [Lextm.SharpSnmpLib.Messaging.Messenger]::UseFullRange = $false
+    } else {
+        [Lextm.SharpSnmpLib.Messaging.Messenger]::UseFullRange = $true
+    }
 
     $SecurityLevel = Get-SNMPv3SecurityLevel $AuthType $AuthSecret $PrivType $PrivSecret
 
