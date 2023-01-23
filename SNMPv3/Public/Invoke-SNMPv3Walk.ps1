@@ -67,15 +67,12 @@
 
 .EXAMPLE
 
-    PS> Invoke-SNMPv3Walk -UserName usr-none-none -Target demo.snmplabs.com -OID 1.3.6.1.2.1.2.2.1.1 -Context 1016117d6836664ee15b9b2af5642c3c
+    PS> Invoke-SNMPv3Walk -UserName usr-none-none -Target demo.pysnmp.com -OID 1.3.6.1.2.1.2.2.1.1 -Context 1016117d6836664ee15b9b2af5642c3c
 
     Node           OID                        Type Value
     ----           ---                        ---- -----
-    104.236.166.95 1.3.6.1.2.1.2.2.1.1.1 Integer32 1    
-    104.236.166.95 1.3.6.1.2.1.2.2.1.1.2 Integer32 2    
-    104.236.166.95 1.3.6.1.2.1.2.2.1.1.3 Integer32 3    
-    104.236.166.95 1.3.6.1.2.1.2.2.1.1.4 Integer32 4    
-    104.236.166.95 1.3.6.1.2.1.2.2.1.1.5 Integer32 5 
+    20.163.207.223 1.3.6.1.2.1.2.2.1.1.1 Integer32 1    
+    20.163.207.223 1.3.6.1.2.1.2.2.1.1.2 Integer32 2    
 
 #>
 

@@ -62,11 +62,11 @@
 
 .EXAMPLE
 
-    PS> Invoke-SNMPv3Get -UserName usr-none-none -Target demo.snmplabs.com -OID 1.3.6.1.2.1.1.1.0
+    PS> Invoke-SNMPv3Get -UserName usr-none-none -Target demo.pysnmp.com -OID 1.3.6.1.2.1.1.1.0
 
-    Node           OID                      Type Value                                                          
-    ----           ---                      ---- -----                                                          
-    104.236.166.95 1.3.6.1.2.1.1.1.0 OctetString Linux zeus 4.8.6.5-smp #2 SMP Sun Nov 13 14:58:11 CDT 2016 i686
+    Node           OID                      Type Value                       
+    ----           ---                      ---- -----                       
+    20.163.207.223 1.3.6.1.2.1.1.1.0 OctetString #SNMP Agent on .NET Standard
 
 #>
 
