@@ -3,7 +3,14 @@ SNMPv3
 
 PowerShell Module for SNMPv3
 
-### Installation
+## Requirements
+### Desktop
+Windows PowerShell 5.1 and .NET Framework 4.7.1 or later
+
+### Core
+PowerShell 7.2 or later
+
+## Installation
 
 ```PowerShell
 Install-Module -Name SNMPv3
