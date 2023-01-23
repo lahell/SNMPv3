@@ -133,7 +133,7 @@
 
     foreach ($ObjectIdentifier in $OID)
     {
-        $VariableList.Add([Lextm.SharpSnmpLib.ObjectIdentifier]::new($ObjectIdentifier))
+        $VariableList.Add([Lextm.SharpSnmpLib.Variable]::new([Lextm.SharpSnmpLib.ObjectIdentifier]::new($ObjectIdentifier)))
     }
 
     $Request = [Lextm.SharpSnmpLib.Messaging.GetRequestMessage]::new(

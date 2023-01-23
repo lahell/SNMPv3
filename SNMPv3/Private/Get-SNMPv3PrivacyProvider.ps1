@@ -10,11 +10,7 @@
     {
         'DES'
         { 
-            if ([Lextm.SharpSnmpLib.Security.DESPrivacyProvider]::IsSupported) {
-                [Lextm.SharpSnmpLib.Security.DESPrivacyProvider]::new($PrivSecret, $Auth)
-            } else {
-                [SNMPv3.BouncyCastle.BouncyCastleDESPrivacyProvider]::new($PrivSecret, $Auth)
-            }
+            [Lextm.SharpSnmpLib.Security.DESPrivacyProvider]::new($PrivSecret, $Auth)
         }
 
         'TribleDES'
@@ -24,29 +20,17 @@
         
         'AES128'
         {
-            if ([Lextm.SharpSnmpLib.Security.AESPrivacyProviderBase]::IsSupported) {
-                [Lextm.SharpSnmpLib.Security.AESPrivacyProvider]::new($PrivSecret, $Auth)
-            } else {
-                [SNMPv3.BouncyCastle.BouncyCastleAESPrivacyProvider]::new($PrivSecret, $Auth)
-            }
+            [Lextm.SharpSnmpLib.Security.AESPrivacyProvider]::new($PrivSecret, $Auth)
         }
 
         'AES192'
         {
-            if ([Lextm.SharpSnmpLib.Security.AESPrivacyProviderBase]::IsSupported) {
-                [Lextm.SharpSnmpLib.Security.AES192PrivacyProvider]::new($PrivSecret, $Auth)
-            } else {
-                [SNMPv3.BouncyCastle.BouncyCastleAES192PrivacyProvider]::new($PrivSecret, $Auth)
-            }
+            [Lextm.SharpSnmpLib.Security.AES192PrivacyProvider]::new($PrivSecret, $Auth)
         }
 
         'AES256'
         {
-            if ([Lextm.SharpSnmpLib.Security.AESPrivacyProviderBase]::IsSupported) {
-                [Lextm.SharpSnmpLib.Security.AES256PrivacyProvider]::new($PrivSecret, $Auth)
-            } else {
-                [SNMPv3.BouncyCastle.BouncyCastleAES256PrivacyProvider]::new($PrivSecret, $Auth)
-            }
+            [Lextm.SharpSnmpLib.Security.AES256PrivacyProvider]::new($PrivSecret, $Auth)
         }
 
         default
