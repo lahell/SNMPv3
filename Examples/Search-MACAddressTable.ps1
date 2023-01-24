@@ -5,7 +5,7 @@
  # Use Invoke-SNMPv3Get and Invoke-SNMPv3Walk to search for a MAC address
  # in the MAC address table of Cisco Catalyst switches.
  #
- # If a MAC address has been learned on a trunk port you can use -Recurse to follow the 
+ # If a MAC address has been learned on a trunk port you can use -Recurse to follow the
  # address across neighbor switches until the correct port of the MAC address has been found.
  #
  # More info:
@@ -28,7 +28,7 @@ function Search-MACAddressTable {
         [switch]$Recurse,
         [int]$Timeout = 3000
     )
-    
+
     $Verbose = [bool]$PSBoundParameters['Verbose']
 
     $sysName                    = '1.3.6.1.2.1.1.5'
@@ -51,7 +51,7 @@ function Search-MACAddressTable {
 
     if (-not [IPAddress]::TryParse($Switch, [ref]$IPAddress)) {
         try {
-            $IPAddress = [System.Net.DNS]::GetHostAddresses($Switch) | select -ExpandProperty IPAddressToString
+            $IPAddress = [System.Net.DNS]::GetHostAddresses($Switch) | Select-Object -ExpandProperty IPAddressToString
         } catch {
             Write-Error -Message 'Unable to resolve host name' -ErrorAction Stop
         }
@@ -74,13 +74,13 @@ function Search-MACAddressTable {
 
     Write-Progress -Activity "Searching for $MACFormatted" -Status $IPAddress -CurrentOperation 'Collecting data'
 
-    $VLANs = Invoke-SNMPv3Walk @Request -OID $vtpVlanState | foreach { $_.OID.Split('.') | select -Last 1 }
+    $VLANs = Invoke-SNMPv3Walk @Request -OID $vtpVlanState | ForEach-Object { $_.OID.Split('.') | Select-Object -Last 1 }
 
     foreach ($VLAN in $VLANs) {
         $Current = Invoke-SNMPv3Get @Request -OID "$dot1dTpFdbAddress.$MACDotted" -Context "vlan-$VLAN"
         if ($Current -and $Current.Type -ne 'NoSuchInstance') {
-            $Found = $Current | select *, @{N='VLAN';E={[int]$VLAN}}
-            break 
+            $Found = $Current | Select-Object *, @{N='VLAN';E={[int]$VLAN}}
+            break
         }
     }
 
@@ -91,10 +91,10 @@ function Search-MACAddressTable {
         $Port       = (Invoke-SNMPv3Get @Request -OID "$ifName.$ifIndex").Value
         $Switch     = (Invoke-SNMPv3Walk @Request -OID $sysName).Value
         $Desc       = (Invoke-SNMPv3Get @Request -OID "$ifAlias.$ifIndex").Value
-        $Mode       = Invoke-SNMPv3Get @Request -OID "$vlanTrunkPortDynamicStatus.$ifIndex" | foreach { $_.Value.ToInt32() }
+        $Mode       = Invoke-SNMPv3Get @Request -OID "$vlanTrunkPortDynamicStatus.$ifIndex" | ForEach-Object { $_.Value.ToInt32() }
         $CDPHost    = (Invoke-SNMPv3Walk @Request -OID "$cdpCacheDeviceId.$ifIndex").Value
-        $CDPVLAN    = Invoke-SNMPv3Walk @Request -OID "$cdpCacheNativeVLAN.$ifIndex" | foreach { $_.Value.ToInt32() }
-        $CDPIPAddr  = Invoke-SNMPv3Walk @Request -OID "$cdpCacheAddress.$ifIndex" | foreach { [IPAddress]::new($_.Value.GetRaw()) }
+        $CDPVLAN    = Invoke-SNMPv3Walk @Request -OID "$cdpCacheNativeVLAN.$ifIndex" | ForEach-Object { $_.Value.ToInt32() }
+        $CDPIPAddr  = Invoke-SNMPv3Walk @Request -OID "$cdpCacheAddress.$ifIndex" | ForEach-Object { [IPAddress]::new($_.Value.GetRaw()) }
 
         if ($Recurse -and $PortMode[$Mode] -eq 'Trunk' -and $Found.VLAN -ne $CDPVLAN) {
             Write-Verbose -Message "Moving on to $CDPHost"
@@ -154,9 +154,9 @@ Port          : Gi1/0/1
 VLAN          : 100
 Mode          : Access
 Description   : HR Printer
-CDPHostName   : 
-CDPHostIP     : 
-CDPNativeVLAN : 
+CDPHostName   :
+CDPHostIP     :
+CDPNativeVLAN :
 
 #>
 
@@ -194,7 +194,7 @@ CDPNativeVLAN : 999
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # In this example the MAC address was found on a trunk port
-# and tracked down to an access port using -Recurse. 
+# and tracked down to an access port using -Recurse.
 # Use -Verbose to show the path across switches.
 
 $Search = @{
@@ -223,8 +223,8 @@ Port          : Gi1/0/5
 VLAN          : 120
 Mode          : Access
 Description   : HR Workstation
-CDPHostName   : 
-CDPHostIP     : 
-CDPNativeVLAN : 
+CDPHostName   :
+CDPHostIP     :
+CDPNativeVLAN :
 
 #>

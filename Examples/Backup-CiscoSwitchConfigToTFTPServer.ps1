@@ -21,7 +21,7 @@ Invoke-SNMPv3Set @Request -OID "1.3.6.1.4.1.9.9.96.1.1.1.1.14.$Random" -Type Int
 
 # Check Status
 do {
-    $Value = Invoke-SNMPv3Get @Request -OID "1.3.6.1.4.1.9.9.96.1.1.1.1.10.$Random" | select -Expand Value
+    $Value = Invoke-SNMPv3Get @Request -OID "1.3.6.1.4.1.9.9.96.1.1.1.1.10.$Random" | Select-Object -ExpandProperty Value
     Start-Sleep -Seconds 1
 } until ($Value.ToInt32() -gt 2)
 
