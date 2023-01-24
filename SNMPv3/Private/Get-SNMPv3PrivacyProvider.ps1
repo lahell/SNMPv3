@@ -13,7 +13,7 @@
             [Lextm.SharpSnmpLib.Security.DESPrivacyProvider]::new($PrivSecret, $Auth)
         }
 
-        'TribleDES'
+        'TripleDES'
         {
             [Lextm.SharpSnmpLib.Security.TripleDESPrivacyProvider]::new($PrivSecret, $Auth)
         }
