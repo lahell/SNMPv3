@@ -14,12 +14,12 @@ Describe "SharpSnmpLib" {
 
 Describe "ScriptAnalyzer" {
     It "Should return 0" {
-        $Result = (Invoke-ScriptAnalyzer .\SNMPv3\ -Recurse).Count
+        $Result = (Invoke-ScriptAnalyzer $ProjectRoot -Recurse).Count
         $Result | Should -Be 0
     }
 }
 
-Describe "Invoke-SNMPvSet -UserName <_.username> -AuthType <_.authtype> -PrivType <_.privtype>" -ForEach $Credentials {
+Describe "Invoke-SNMPvSet -UserName <_.username> -AuthType <_.authtype> -PrivType <_.privtype>" -ForEach $script:Credentials {
     Context "Authentication and Privacy" {
         It "Should return 'SysName'" {
             $Request = @{
