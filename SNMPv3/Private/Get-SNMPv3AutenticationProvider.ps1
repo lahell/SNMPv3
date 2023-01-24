@@ -22,6 +22,16 @@
             [Lextm.SharpSnmpLib.Security.SHA256AuthenticationProvider]::new($AuthSecret)
         }
 
+        'SHA384'
+        {
+            [Lextm.SharpSnmpLib.Security.SHA384AuthenticationProvider]::new($AuthSecret)
+        }
+
+        'SHA512'
+        {
+            [Lextm.SharpSnmpLib.Security.SHA512AuthenticationProvider]::new($AuthSecret)
+        }
+
         default
         {
             [Lextm.SharpSnmpLib.Security.DefaultAuthenticationProvider]::Instance
