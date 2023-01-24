@@ -10,7 +10,7 @@
 .DESCRIPTION
 
     Function supports SNMPv3 with security levels noAuthNoPriv, authNoPriv and authPriv.
-    Based on #SNMP Library (https://www.sharpsnmp.com/) 
+    Based on #SNMP Library (https://www.sharpsnmp.com/)
 
 .PARAMETER UserName
 
@@ -74,8 +74,8 @@
 
     PS> Invoke-SNMPv3Set -UserName usr-none-none -Target demo.pysnmp.com -OID 1.3.6.1.2.1.1.5.0 -Type String -Value SysName
 
-    Node           OID                      Type Value  
-    ----           ---                      ---- -----  
+    Node           OID                      Type Value
+    ----           ---                      ---- -----
     20.163.207.223 1.3.6.1.2.1.1.5.0 OctetString SysName
 
 #>
@@ -92,7 +92,7 @@
         [Parameter(Mandatory=$true)]
         [String]$OID,
 
-        [Parameter(Mandatory=$true)]  
+        [Parameter(Mandatory=$true)]
         [ValidateSet('Integer', 'Unsigned', 'String', 'HexString', 'DecimalString', 'NullObject', 'ObjectIdentifier', 'TimeTicks', 'IPAddress')]
         [String]$Type,
 
@@ -136,7 +136,7 @@
 
     switch ($Type)
     {
-        'Integer' { 
+        'Integer' {
             $Data = [Lextm.SharpSnmpLib.Integer32]::new([int32]::Parse($Value))
         }
         'Unsigned' {
@@ -238,8 +238,8 @@
             $Reply
         )
     }
-    
-    $Reply.Scope.Pdu.Variables | foreach {
+
+    $Reply.Scope.Pdu.Variables | ForEach-Object {
         [PSCustomObject] @{
             PSTypeName = 'SNMPv3Output'
             Node       = $IPAddress

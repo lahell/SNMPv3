@@ -5,11 +5,11 @@
         [Lextm.SharpSnmpLib.OctetString]$PrivSecret,
         [Lextm.SharpSnmpLib.Security.IAuthenticationProvider]$Auth
     )
-    
+
     switch ($PrivType)
     {
         'DES'
-        { 
+        {
             [Lextm.SharpSnmpLib.Security.DESPrivacyProvider]::new($PrivSecret, $Auth)
         }
 
@@ -17,7 +17,7 @@
         {
             [Lextm.SharpSnmpLib.Security.TripleDESPrivacyProvider]::new($PrivSecret, $Auth)
         }
-        
+
         'AES128'
         {
             [Lextm.SharpSnmpLib.Security.AESPrivacyProvider]::new($PrivSecret, $Auth)

@@ -10,7 +10,7 @@
 .DESCRIPTION
 
     Function supports SNMPv3 with security levels noAuthNoPriv, authNoPriv and authPriv.
-    Based on SnmpSharpNet - SNMP Library for C# (http://www.snmpsharpnet.com/) 
+    Based on SnmpSharpNet - SNMP Library for C# (http://www.snmpsharpnet.com/)
 
 .PARAMETER UserName
 
@@ -71,8 +71,8 @@
 
     Node           OID                        Type Value
     ----           ---                        ---- -----
-    20.163.207.223 1.3.6.1.2.1.2.2.1.1.1 Integer32 1    
-    20.163.207.223 1.3.6.1.2.1.2.2.1.1.2 Integer32 2    
+    20.163.207.223 1.3.6.1.2.1.2.2.1.1.1 Integer32 1
+    20.163.207.223 1.3.6.1.2.1.2.2.1.1.2 Integer32 2
 
 #>
 
@@ -159,7 +159,7 @@
         $Report
     ) | Out-Null
 
-    $Result | foreach {
+    $Result | ForEach-Object {
         [PSCustomObject] @{
             PSTypeName = 'SNMPv3Output'
             Node       = $IPAddress

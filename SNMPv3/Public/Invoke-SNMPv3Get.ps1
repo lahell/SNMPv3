@@ -10,7 +10,7 @@
 .DESCRIPTION
 
     Function supports SNMPv3 with security levels noAuthNoPriv, authNoPriv and authPriv.
-    Based on #SNMP Library (https://www.sharpsnmp.com/) 
+    Based on #SNMP Library (https://www.sharpsnmp.com/)
 
 .PARAMETER UserName
 
@@ -64,8 +64,8 @@
 
     PS> Invoke-SNMPv3Get -UserName usr-none-none -Target demo.pysnmp.com -OID 1.3.6.1.2.1.1.1.0
 
-    Node           OID                      Type Value                       
-    ----           ---                      ---- -----                       
+    Node           OID                      Type Value
+    ----           ---                      ---- -----
     20.163.207.223 1.3.6.1.2.1.1.1.0 OctetString #SNMP Agent on .NET Standard
 
 #>
@@ -118,7 +118,7 @@
     }
 
     $Context = if ([String]::IsNullOrWhiteSpace($Context)) {[String]::Empty} else {$Context}
-    
+
     $IPAddress = [ipaddress]::None
     if ([ipaddress]::TryParse($Target, [ref]$IPAddress) -eq $false) {
         $IPAddress  = [System.Net.Dns]::GetHostEntry($Target).AddressList[0]
@@ -190,7 +190,7 @@
         )
     }
 
-    $Reply.Scope.Pdu.Variables | foreach {
+    $Reply.Scope.Pdu.Variables | ForEach-Object {
         [PSCustomObject] @{
             PSTypeName = 'SNMPv3Output'
             Node       = $IPAddress
