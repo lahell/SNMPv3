@@ -34,8 +34,8 @@ Invoke-SNMPv3Set @Request -OID "1.3.6.1.4.1.9.9.96.1.1.1.1.14.$Random" -Type Int
 
 # Display Result
 switch ($Value.ToInt32()) {
-    3 { Write-Host "Success!" -ForegroundColor Green }
-    4 { Write-Host "Failure!" -ForegroundColor Red }
+    3 { Write-Output "Success!" }
+    4 { Write-Output "Failure!" }
 }
 
 # Get the new value from sysContact
