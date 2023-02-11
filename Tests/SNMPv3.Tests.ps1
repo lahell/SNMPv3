@@ -1,7 +1,7 @@
 BeforeAll {
     $ProjectRoot = Split-Path $PSScriptRoot -Parent
     Import-Module "$ProjectRoot\SNMPv3"
-    $script:Credentials = Get-Content "$ProjectRoot\Tests\Credentials.json" -Raw | ConvertFrom-Json
+    $Script:Credentials = Get-Content "$ProjectRoot\Tests\Credentials.json" -Raw | ConvertFrom-Json
 }
 
 Describe "SharpSnmpLib" {
@@ -19,7 +19,7 @@ Describe "ScriptAnalyzer" {
     }
 }
 
-Describe "Invoke-SNMPvSet -UserName <_.username> -AuthType <_.authtype> -PrivType <_.privtype>" -ForEach $script:Credentials {
+Describe "Invoke-SNMPvSet -UserName <_.username> -AuthType <_.authtype> -PrivType <_.privtype>" -ForEach $Script:Credentials {
     Context "Authentication and Privacy" {
         It "Should return 'SysName'" {
             $Request = @{
@@ -35,7 +35,7 @@ Describe "Invoke-SNMPvSet -UserName <_.username> -AuthType <_.authtype> -PrivTyp
     }
 }
 
-Describe "Invoke-SNMPvGet -UserName <_.username> -AuthType <_.authtype> -PrivType <_.privtype>" -ForEach $Credentials {
+Describe "Invoke-SNMPvGet -UserName <_.username> -AuthType <_.authtype> -PrivType <_.privtype>" -ForEach $Script:Credentials {
     Context "Authentication and Privacy" {
         It "Should return 'SysName'" {
             $Request = @{
@@ -51,7 +51,7 @@ Describe "Invoke-SNMPvGet -UserName <_.username> -AuthType <_.authtype> -PrivTyp
     }
 }
 
-Describe "Invoke-SNMPv3Walk -UserName <_.username> -AuthType <_.authtype> -PrivType <_.privtype>" -ForEach $Credentials {
+Describe "Invoke-SNMPv3Walk -UserName <_.username> -AuthType <_.authtype> -PrivType <_.privtype>" -ForEach $Script:Credentials {
     Context "Authentication and Privacy" {
         It "Should return 'SysName'" {
             $Request = @{
